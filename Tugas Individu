@@ -132,3 +132,37 @@ double measureSortTime(T sortFunc, vector<int> arr) {
     auto duration = duration_cast<microseconds>(stop - start);
     return duration.count();
 }
+
+int main() {
+    vector<int> sizes = {10, 100, 500, 1000, 10000};
+    
+    cout << "Tabel Running Time\n";
+    cout << "Algorithm\tKompleksitas Waktu - fungsi O(n)\tN=10(µs)\tN=100(µs)\tN=500(µs)\tN=1000(µs)\tN=10000(µs)\n";
+    
+
+    vector<void(*)(vector<int>&)> sortFunctions = {bubbleSort, insertionSort, selectionSort, mergeSortWrapper, quickSortWrapper};
+    vector<string> sortNames = {"Bubble Sort", "Insertion Sort", "Selection Sort", "Merge Sort", "Quick Sort"};
+    vector<string> complexities = {"O(n^2)", "O(n^2)", "O(n^2)", "O(n log n)", "O(n log n)"};
+    vector<string> conditions = {"Random", "Reversed", "Sorted"};
+    
+    for (int i = 0; i < sortFunctions.size(); i++) {
+        for (const auto& condition : conditions) {
+            cout << sortNames[i] << "\t" << complexities[i] << "\t" << condition;
+            for (int size : sizes) {
+                vector<int> data;
+                if (condition == "Random") {
+                    data = generateRandomVector(size);
+                } else if (condition == "Reversed") {
+                    data = generateReverseSortedVector(size);
+                } else if (condition == "Sorted") {
+                    data = generateSortedVector(size);
+                }
+                double time = measureSortTime(sortFunctions[i], data);
+                cout << "\t" << fixed << setprecision(2) << time;
+            }
+            cout << "\n";
+        }
+    }
+
+    return 0;
+}
